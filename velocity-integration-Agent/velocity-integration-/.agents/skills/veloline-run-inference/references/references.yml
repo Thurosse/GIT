@@ -38,7 +38,7 @@ items:
   - id: splines
     title: B-spline basis
     type: internal
-    path: splines_torch_fixed.py
+    path: .agents/skills/veloline-pipeline-setup/scripts/splines_torch_fixed.py
     note: Device-aware spline basis used in fit2 models.
   - id: pyro-inference
     title: Pyro inference docs

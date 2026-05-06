@@ -15,9 +15,9 @@ Wraps notebook §9–§10. Loads the `mp` + AnnData written by `veloline-pipelin
 
 ## Workflow
 
-1. Run the inference stage from PowerShell:
+1. Run the inference stage:
    ```bash
-   wsl -e bash -lc "cd '/mnt/c/Users/arthu/OneDrive/Bureau/Claude Code' && conda run -n velocycle python -m veloline.stages.inference"
+   conda run -n velocycle python -m veloline.stages.inference
    ```
    Optional flags:
    - `--run latest` (default) or `--run run_<UTC>_<hash>` to target a specific run dir.

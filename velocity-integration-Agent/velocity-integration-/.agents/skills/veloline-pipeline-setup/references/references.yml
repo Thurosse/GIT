@@ -35,11 +35,21 @@ items:
     type: internal
     path: veloline/io_state.py
     note: Run dir management and state persistence.
+  - id: core-notebook
+    title: Core pipeline notebook
+    type: internal
+    path: .agents/skills/veloline-pipeline-setup/scripts/core_refactored_5.5.ipynb
+    note: Original notebook (§1–§8) that this skill wraps; source of truth for pipeline logic.
   - id: driver-notebook
     title: Driver notebook
     type: internal
-    path: veloline_driver.ipynb
+    path: .agents/skills/veloline-pipeline-setup/scripts/veloline_driver.ipynb
     note: Notebook wrapper that calls the package API.
+  - id: splines-torch
+    title: Splines torch fixed
+    type: internal
+    path: .agents/skills/veloline-pipeline-setup/scripts/splines_torch_fixed.py
+    note: Fixed spline utilities imported via PYTHONPATH at the project root.
   - id: anndata
     title: AnnData docs
     type: external
