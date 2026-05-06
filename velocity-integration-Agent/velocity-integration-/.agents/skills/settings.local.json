@@ -1,4 +1,4 @@
-{
+a{
   "permissions": {
     "allow": [
       "Bash(python -c ' *)",

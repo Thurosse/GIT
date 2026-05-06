@@ -66,8 +66,10 @@ FIT2_VARIABLE_MODE = "rna_adt_matched"  # "all_rna" | "rna_adt_matched" | "expli
 FIT1_EXPLICIT_GENE_NAMES = []
 FIT2_EXPLICIT_GENE_NAMES = []
 
-FIT_1_MODEL = "fit1_with_spliced_and_unspliced_model"  # | "fit1_latent_variable_model"
-FIT_2_MODEL = "fit2_latent_variable_model"             # | "fit2_latent_variable_model0" | "fit2_latent_integral_separate_model" | "fit2_latent_integral_model"
+# ── fit-quality plots ───────────────────────────────────────────────────────
+# If non-empty, only these genes are plotted in fit-quality panels.
+FIT_QUALITY_GENE_LIST = []
+
 
 FIT_1_INFERENCE_BACKEND = "svi"   # "svi" | "mcmc"
 FIT_2_INFERENCE_BACKEND = "svi"   # "svi" | "mcmc"
@@ -77,20 +79,8 @@ FIT_1_TO_FIT_2_CONSTANTS = ["phi", "nu", "logbeta", "loggamma", "shape_inv"]
 # accepted: any subset of ["phi","nu","spliced","unspliced","logbeta","loggamma","shape_inv"] or ["all"]
 # don't use spliced and unspliced in general
 
-# ── batching controls (convergence/stability) ─────────────────────────────────
-USE_BATCHING = False
-FIT_1_CELL_BATCH_SIZE = 512
-FIT_1_GENE_BATCH_SIZE = -1
-FIT_2_CELL_BATCH_SIZE = 512
-FIT_2_GENE_BATCH_SIZE = -1
 
-# ── decaying baseline controls ─────────────────────────────────────────────────
-BASELINE_ENABLED    = False
-BASELINE_BRANCH     = "all"          # "all" | "su" | "p"
-BASELINE_FAMILY     = "exponential"  # "exponential" | "linear"
-BASELINE_AMPLITUDE  = 0.0
-BASELINE_DECAY_RATE = 1.0
-BASELINE_FLOOR      = 0.0
+
 
 # ── MCMC controls ─────────────────────────────────────────────────────────────
 FIT_1_MCMC_NUM_SAMPLES    = 200
@@ -111,17 +101,13 @@ NU_SPLINE_DEGREE = 3
 K_SPLINE_DF     = 12
 K_SPLINE_DEGREE = 3
 
-# ── B-spline for ω (velocity scaling) — constant (=1) in current pipeline ────
-OMEGA_SPLINE_DF     = 4
-OMEGA_SPLINE_DEGREE = 3
-MU_OMEGA_0 = 0.5; SIGMA_OMEGA_0 = 0.03
-MU_OMEGA_I = 0.0; SIGMA_OMEGA_I = 0.2
-MU_OMEGA   = 0.5; SIGMA_OMEGA   = 0.25
 
-# ── pseudotime range ─────────────────────────────────────────────────────────
-PHI_MIN = 0.0   # ø
-PHI_MAX = 10.0  # χ
-
+# ── fitting order ────────────────────────────────────────────────────────────
+# FIT 1 — infer ϕ
+# FIT 2 — condition on ϕ
+# Step 3 — posterior predictive draws → extract expectations
+RUN_FIT_1 = True
+RUN_FIT_2 = True
 
 # ── optimisation: FIT 1 (ϕ) ──────────────────────────────────────────────────
 FIT_1_N_ITER  = 2000
@@ -138,19 +124,162 @@ FIT_2_N_INITS = 5
 FIT_2_WARMUP  = 20
 
 
-# ── fitting order ────────────────────────────────────────────────────────────
-# FIT 1 — infer ϕ
-# FIT 2 — condition on ϕ
-# Step 3 — posterior predictive draws → extract expectations
-RUN_FIT_1 = True
-RUN_FIT_2 = True
+
+
+
+# ── shift-analysis smoothing ─────────────────────────────────────────────────
+SHIFT_WINDOW_SIZE = 200   # cells window for windowed derivative
+
+# ── neighbourhood / diffusion map ────────────────────────────────────────────
+N_NEIGHBORS = 50
+N_PCS       = 10
+N_DIFFMAP   = 3
 
 # ── if the pseudo time is in the wrong order ─────────────────────────────────
 INVERSE_DPT = False
 
-# ── posterior predictive samples ─────────────────────────────────────────────
-FIT_1_NUM_SAMPLES = 200
-FIT_2_NUM_SAMPLES = 200
+
+# ── editable parameter registry (for setup-stage reporting) ──────────────────
+# Only parameters listed here are considered user-editable for reporting.
+EDITABLE_PARAM_GROUPS = [
+    ("hardware", [
+        "USE_GPU",
+    ]),
+    ("data_loading", [
+        "data_all_path",
+        "DATA_PATH",
+        "BARCODE_NAMES",
+        "BARCODE_SELECTED",
+        "cell_id",
+        "EXCLUDED_CLUSTERS",
+    ]),
+    ("gene_selection", [
+        "N_HIGHLY_VARIABLE",
+        "MIN_CELLS_FRACTION",
+        "MIN_SPLICED_MEAN",
+        "MIN_UNSPLICED_MEAN",
+    ]),
+    ("adt_retention", [
+        "FORCE_INCLUDE_ADT_MAPPED_GENES",
+        "FORCED_ADT_PROTEINS",
+    ]),
+    ("variable_selection", [
+        "FIT1_VARIABLE_MODE",
+        "FIT2_VARIABLE_MODE",
+        "FIT1_EXPLICIT_GENE_NAMES",
+        "FIT2_EXPLICIT_GENE_NAMES",
+    ]),
+    ("fit_quality", [
+        "FIT_QUALITY_GENE_LIST",
+    ]),
+    ("workflow", [
+        "FIT_1_INFERENCE_BACKEND",
+        "FIT_2_INFERENCE_BACKEND",
+        "FIT_1_RESULT_REDUCTION",
+        "FIT_1_TO_FIT_2_SOURCE",
+        "FIT_1_TO_FIT_2_CONSTANTS",
+        "RUN_FIT_1",
+        "RUN_FIT_2",
+    ]),
+    ("mcmc_controls", [
+        "FIT_1_MCMC_NUM_SAMPLES",
+        "FIT_1_MCMC_WARMUP_STEPS",
+        "FIT_1_MCMC_TARGET_ACCEPT",
+        "FIT_1_MCMC_MAX_TREE_DEPTH",
+        "FIT_2_MCMC_NUM_SAMPLES",
+        "FIT_2_MCMC_WARMUP_STEPS",
+        "FIT_2_MCMC_TARGET_ACCEPT",
+        "FIT_2_MCMC_MAX_TREE_DEPTH",
+    ]),
+    ("splines", [
+        "NU_SPLINE_DF",
+        "NU_SPLINE_DEGREE",
+        "K_SPLINE_DF",
+        "K_SPLINE_DEGREE",
+    ]),
+    ("fit1_optim", [
+        "FIT_1_N_ITER",
+        "FIT_1_LR",
+        "FIT_1_BETAS",
+        "FIT_1_N_INITS",
+        "FIT_1_WARMUP",
+    ]),
+    ("fit2_optim", [
+        "FIT_2_N_ITER",
+        "FIT_2_LR",
+        "FIT_2_BETAS",
+        "FIT_2_N_INITS",
+        "FIT_2_WARMUP",
+    ]),
+    ("shift_analysis", [
+        "SHIFT_WINDOW_SIZE",
+    ]),
+    ("neighborhood", [
+        "N_NEIGHBORS",
+        "N_PCS",
+        "N_DIFFMAP",
+    ]),
+    ("pseudotime", [
+        "INVERSE_DPT",
+    ]),
+]
+
+
+def get_editable_param_rows():
+    """Return ordered (group, name, value) rows for editable params only."""
+    rows = []
+    g = globals()
+    for group, names in EDITABLE_PARAM_GROUPS:
+        for name in names:
+            if name not in g:
+                raise KeyError(f"Editable parameter not found: {name}")
+            rows.append((group, name, g[name]))
+    return rows
+
+
+
+#################################################################################
+
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Not Editable  META-PARAMETERS 
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── batching controls (convergence/stability) ─────────────────────────────────
+USE_BATCHING = False
+FIT_1_CELL_BATCH_SIZE = 512
+FIT_1_GENE_BATCH_SIZE = -1
+FIT_2_CELL_BATCH_SIZE = 512
+FIT_2_GENE_BATCH_SIZE = -1
+
+FIT_1_MODEL = "fit1_with_spliced_and_unspliced_model"  # | "fit1_latent_variable_model"
+FIT_2_MODEL = "fit2_latent_variable_model"             # | "fit2_latent_variable_model0" | "fit2_latent_integral_separate_model" | "fit2_latent_integral_model"
+# ── pseudotime range ─────────────────────────────────────────────────────────
+PHI_MIN = 0.0   # ø
+PHI_MAX = 10.0  # χ
+
+#  PRIOR HYPER-PARAMETERS  (cell 7)
+
+# ν (RNA spline weights)
+MU_NU_0 =  0.0;  SIGMA_NU_0 = 0.6
+MU_NU_I = -0.2;  SIGMA_NU_I = 1.5
+
+# dispersion (Gamma prior on shape_inv)
+GAMMA_ALPHA = 1.0
+GAMMA_BETA  = 2.0
+# kinetic rates β, γ  (log-normal)
+MU_BETA  = 2.0;  SIGMA_BETA  = 1.0
+MU_GAMMA = 0.0;  SIGMA_GAMMA = 0.5
+# ADT rates A, B  (same parameterisation)
+MU_B = 2.0;  SIGMA_B = 1.0
+MU_A = 0.0;  SIGMA_A = 0.5
+# ── B-spline for ω (velocity scaling) — constant (=1) in current pipeline ────
+OMEGA_SPLINE_DF     = 4
+OMEGA_SPLINE_DEGREE = 3
+MU_OMEGA_0 = 0.5; SIGMA_OMEGA_0 = 0.03
+MU_OMEGA_I = 0.0; SIGMA_OMEGA_I = 0.2
+MU_OMEGA   = 0.5; SIGMA_OMEGA   = 0.25
 
 # ── dictionary-driven workflow (single control surface) ──────────────────────
 MODEL_WORKFLOW = {
@@ -185,35 +314,17 @@ MODEL_WORKFLOW = {
     },
 }
 
-# ── shift-analysis smoothing ─────────────────────────────────────────────────
-SHIFT_WINDOW_SIZE = 200   # cells window for windowed derivative
-
-# ── neighbourhood / diffusion map ────────────────────────────────────────────
-N_NEIGHBORS = 50
-N_PCS       = 10
-N_DIFFMAP   = 3
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-#  PRIOR HYPER-PARAMETERS  (cell 7)
-# ══════════════════════════════════════════════════════════════════════════════
-# ν (RNA spline weights)
-MU_NU_0 =  0.0;  SIGMA_NU_0 = 0.6
-MU_NU_I = -0.2;  SIGMA_NU_I = 1.5
-
-# dispersion (Gamma prior on shape_inv)
-GAMMA_ALPHA = 1.0
-GAMMA_BETA  = 2.0
-# kinetic rates β, γ  (log-normal)
-MU_BETA  = 2.0;  SIGMA_BETA  = 1.0
-MU_GAMMA = 0.0;  SIGMA_GAMMA = 0.5
-# ADT rates A, B  (same parameterisation)
-MU_B = 2.0;  SIGMA_B = 1.0
-MU_A = 0.0;  SIGMA_A = 0.5
-
-
-# ══════════════════════════════════════════════════════════════════════════════
+# ── decaying baseline controls ─────────────────────────────────────────────────
+BASELINE_ENABLED    = False
+BASELINE_BRANCH     = "all"          # "all" | "su" | "p"
+BASELINE_FAMILY     = "exponential"  # "exponential" | "linear"
+BASELINE_AMPLITUDE  = 0.0
+BASELINE_DECAY_RATE = 1.0
+BASELINE_FLOOR      = 0.0
 # Derived / computed once from the above (do NOT edit below this line)
-# ══════════════════════════════════════════════════════════════════════════════
+
+# ── posterior predictive samples ─────────────────────────────────────────────
+FIT_1_NUM_SAMPLES = 200
+FIT_2_NUM_SAMPLES = 200
 device = torch.device("cuda:0") if (USE_GPU and torch.cuda.is_available()) else torch.device("cpu")
 torch.set_default_device(device)

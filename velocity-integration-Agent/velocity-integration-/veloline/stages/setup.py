@@ -14,11 +14,37 @@ import time
 
 from veloline.metaparams import (
     DATA_PATH, BARCODE_NAMES, BARCODE_SELECTED, USE_GPU, MODEL_WORKFLOW,
+    get_editable_param_rows,
 )
 from veloline.data_loading import load_adata, demultiplex_barcode
 from veloline.preprocess import preprocess_pipeline
 from veloline.mp_builder import build_mp
 from veloline import io_state
+
+
+def _format_editable_param_table(rows):
+    """Format an ASCII table of editable metaparameters for stdout."""
+    headers = ("group", "name", "value")
+    str_rows = [(str(g), str(n), repr(v)) for g, n, v in rows]
+    col_widths = [len(h) for h in headers]
+    for r in str_rows:
+        col_widths = [max(w, len(cell)) for w, cell in zip(col_widths, r)]
+
+    def _line(sep, fill):
+        return sep + sep.join(fill * (w + 2) for w in col_widths) + sep
+
+    def _row(cells):
+        return "|" + "|".join(f" {c.ljust(w)} " for c, w in zip(cells, col_widths)) + "|"
+
+    lines = []
+    lines.append("[setup] editable metaparameters")
+    lines.append(_line("+", "-"))
+    lines.append(_row(headers))
+    lines.append(_line("+", "-"))
+    for r in str_rows:
+        lines.append(_row(r))
+    lines.append(_line("+", "-"))
+    return "\n".join(lines)
 
 
 def main():
@@ -31,6 +57,9 @@ def main():
     run_dir = io_state.mint_run_dir(name=args.run_name)
     print(f"[setup] run_dir = {run_dir}")
     io_state.append_log(run_dir, "setup", f"run dir created: {run_dir}")
+
+    editable_rows = get_editable_param_rows()
+    print(_format_editable_param_table(editable_rows))
 
     io_state.write_manifest(run_dir, extra={"data_path": DATA_PATH, "use_gpu": USE_GPU})
     io_state.freeze_metaparams(run_dir)
