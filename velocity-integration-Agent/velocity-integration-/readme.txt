@@ -1,0 +1,1 @@
+#lef to add : implementation of of poterior ElogP2 in integral model based on the constrution of the model (in order to obtain Bspline )
