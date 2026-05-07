@@ -30,6 +30,26 @@ This skill wraps notebook §1–§8 of `core_refactored_5.5.ipynb` as a single c
    ```
 4. The run dir is recorded in `results/latest.txt`; subsequent stages default to that pointer.
 
+## Metaparameter table ritual (MANDATORY)
+
+The editable metaparameter table is a conversational checkpoint, not just stdout.
+
+**At init (before running setup):**
+1. Run a short read-only command to dump the current editable rows:
+   ```bash
+   conda run -n velocycle python -c "from veloline.metaparams import get_editable_param_rows; from veloline.stages.setup import _format_editable_param_table; print(_format_editable_param_table(get_editable_param_rows()))"
+   ```
+2. Paste the table into chat verbatim, inside a fenced code block.
+3. Ask the user: "These are the current defaults — do you want to modify any before I run setup?" using AskUserQuestion with options like {Run as-is, Modify before running}.
+4. Only proceed to `python -m veloline.stages.setup` after the user confirms.
+
+**When changing metaparameters (any edit to `veloline/metaparams.py`):**
+1. Print the **before** table in chat using the same command above.
+2. Make the edit with the Edit tool.
+3. Print the **after** table in chat using the same command, so the diff is visible to the user.
+
+This ritual applies whether the change is requested up front (step 3 of init) or later in the conversation.
+
 ## Outputs (in `results/<run>/`)
 
 - `state/adata_fit.h5ad` — preprocessed AnnData.
@@ -45,7 +65,7 @@ This skill wraps notebook §1–§8 of `core_refactored_5.5.ipynb` as a single c
 ## Failure recovery
 
 - If `mp_builder` raises "No ADT-matched RNA genes are available", widen filters in `metaparams.py` (`MIN_*_MEAN`, `MIN_CELLS_FRACTION`) or set `FORCE_INCLUDE_ADT_MAPPED_GENES=True`.
-- The skill does not edit `metaparams.py`. If the user wants to change knobs, edit that file by hand and re-run the skill.
+- The skill **may** edit `metaparams.py` when the user asks for it during the init ritual or afterwards. Whenever it does, the before/after table ritual above is mandatory.
 
 ## Eval
 
