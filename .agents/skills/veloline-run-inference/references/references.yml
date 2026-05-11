@@ -1,0 +1,62 @@
+version: 1
+items:
+  - id: agents-map
+    title: AGENTS stage map
+    type: internal
+    path: AGENTS.md
+    note: Canonical mapping of notebook sections to package modules and run layout.
+  - id: stage-inference
+    title: Stage 2 entrypoint
+    type: internal
+    path: veloline/stages/inference.py
+    note: CLI entrypoint for fit1/fit2; saves posteriors and ELBO traces.
+  - id: fit1
+    title: fit1 runner
+    type: internal
+    path: veloline/fit1.py
+    note: Fit1 orchestration and posterior extraction.
+  - id: fit2
+    title: fit2 runner
+    type: internal
+    path: veloline/fit2.py
+    note: Fit2 orchestration and posterior extraction.
+  - id: models
+    title: Model registry
+    type: internal
+    path: veloline/models.py
+    note: Pyro model variants and registry mapping.
+  - id: metaparams
+    title: Meta-parameters
+    type: internal
+    path: veloline/metaparams.py
+    note: Workflow gates and model selection strings.
+  - id: io-state
+    title: State I/O helpers
+    type: internal
+    path: veloline/io_state.py
+    note: RNG restore/save and posterior persistence.
+  - id: splines
+    title: B-spline basis
+    type: internal
+    path: veloline/splines_torch_fixed.py
+    note: Device-aware spline basis used in fit2 models.
+  - id: pyro-inference
+    title: Pyro inference docs
+    type: external
+    url: https://docs.pyro.ai/en/stable/inference.html
+    note: SVI and MCMC API reference.
+  - id: pyro-examples
+    title: Pyro examples
+    type: external
+    url: https://pyro.ai/examples/
+    note: Patterns for variational inference and MCMC.
+  - id: pytorch
+    title: PyTorch docs
+    type: external
+    url: https://pytorch.org/docs/stable/
+    note: Autograd and tensor operations.
+  - id: scvelo
+    title: scVelo docs
+    type: external
+    url: https://scvelo.readthedocs.io/
+    note: RNA velocity context and conventions.

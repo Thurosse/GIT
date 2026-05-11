@@ -1,2 +1,0 @@
-CONDA_ENV=env3.10
-PYTHONPATH=.agents/skills/veloline-pipeline-setup/scripts

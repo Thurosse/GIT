@@ -1,0 +1,8 @@
+a{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ' *)",
+      "Bash(PYTHONIOENCODING=utf-8 python)"
+    ]
+  }
+}

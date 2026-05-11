@@ -1,8 +1,0 @@
-{
-  "hookPolicy": {
-    "name": "results-only-writes",
-    "description": "Block any write operation outside the results/ directory.",
-    "allowReadsOutsideResults": true,
-    "scope": "workspace"
-  }
-}

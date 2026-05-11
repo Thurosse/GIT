@@ -1,0 +1,157 @@
+# Trigger eval for veloline-pipeline-setup skill
+# Each case tests whether the agent should invoke (or skip) this skill.
+#
+# expected values:
+#   invoke — the prompt should cause the agent to load and execute this skill
+#   skip   — the prompt should NOT trigger this skill (another skill or plain reply instead)
+#
+# Category codes:
+#   P-exact   — mirrors a phrase verbatim from the SKILL.md description
+#   P-synonym — paraphrase or synonym of a trigger phrase
+#   P-context — contextual trigger (implicit stage-1 intent)
+#   N-explicit — explicitly excluded by SKILL.md ("Do NOT trigger on …")
+#   N-other-skill — should route to veloline-run-inference or veloline-analysis-result instead
+#   N-conceptual — user is asking a question, not requesting execution
+#   N-edit — user wants to edit code/config, not run the stage
+
+cases:
+
+  # ── Positive: should invoke ───────────────────────────────────────────────
+
+  - id: p01_exact_run_setup
+    category: P-exact
+    prompt: "run veloline pipeline setup"
+    expected: invoke
+    rationale: >
+      Exact trigger phrase listed in the SKILL.md description.
+
+  - id: p02_exact_rebuild_mp
+    category: P-exact
+    prompt: "rebuild mp"
+    expected: invoke
+    rationale: >
+      Exact trigger phrase listed in the SKILL.md description.
+
+  - id: p03_exact_prepare_data
+    category: P-exact
+    prompt: "prepare data for fit1/fit2"
+    expected: invoke
+    rationale: >
+      Exact trigger phrase listed in the SKILL.md description.
+
+  - id: p04_exact_execute_setup
+    category: P-exact
+    prompt: "execute setup stage of the velocity pipeline"
+    expected: invoke
+    rationale: >
+      Exact trigger phrase listed in the SKILL.md description.
+
+  - id: p05_exact_regenerate_adata
+    category: P-exact
+    prompt: "regenerate adata_fit"
+    expected: invoke
+    rationale: >
+      Exact trigger phrase listed in the SKILL.md description.
+
+  - id: p06_synonym_rebuild_metacontainer
+    category: P-synonym
+    prompt: "rebuild the MetaparContainer from scratch"
+    expected: invoke
+    rationale: >
+      MetaparContainer (mp) construction is the core product of stage 1.
+      "Rebuild from scratch" unambiguously means re-run setup.
+
+  - id: p07_synonym_stage1
+    category: P-synonym
+    prompt: "re-run stage 1 of the pipeline"
+    expected: invoke
+    rationale: >
+      Stage 1 is exactly what this skill covers (notebook §1–§8).
+
+  - id: p08_context_data_changed
+    category: P-context
+    prompt: "the data changed, can you redo the preprocessing and build mp?"
+    expected: invoke
+    rationale: >
+      User is asking to redo preprocessing and build mp — both are stage-1
+      operations. Clear contextual trigger.
+
+  - id: p09_context_after_metaparams_edit
+    category: P-context
+    prompt: "I just edited metaparams.py to change N_HIGHLY_VARIABLE, now rebuild the setup state"
+    expected: invoke
+    rationale: >
+      User already performed the edit and now explicitly requests re-running
+      the setup stage to apply the change. The skill should execute (it does
+      not edit metaparams.py itself).
+
+  - id: p10_context_start_fresh
+    category: P-context
+    prompt: "start the pipeline from scratch"
+    expected: invoke
+    rationale: >
+      Starting from scratch means running stage 1 first (setup is the entry
+      point of the pipeline). Strong implicit trigger.
+
+  # ── Negative: should NOT invoke ──────────────────────────────────────────
+
+  - id: n01_explicit_edit_metaparams
+    category: N-explicit
+    prompt: "edit metaparams.py to increase N_HIGHLY_VARIABLE to 3000"
+    expected: skip
+    rationale: >
+      Explicitly excluded: "Do NOT trigger on requests to modify metaparams.py".
+      User wants a code edit, not stage execution.
+
+  - id: n02_explicit_plotting
+    category: N-explicit
+    prompt: "show me the UMAP coloured by cluster"
+    expected: skip
+    rationale: >
+      Explicitly excluded: "Do NOT trigger on plotting questions".
+      Should route to the analysis skill or inline matplotlib.
+
+  - id: n03_other_skill_run_fit1
+    category: N-other-skill
+    prompt: "run fit1"
+    expected: skip
+    rationale: >
+      "run fit1" is a trigger phrase for veloline-run-inference, not
+      veloline-pipeline-setup.
+
+  - id: n04_other_skill_inference_stage
+    category: N-other-skill
+    prompt: "run veloline inference stage"
+    expected: skip
+    rationale: >
+      Exact trigger phrase for veloline-run-inference.
+
+  - id: n05_other_skill_analysis
+    category: N-other-skill
+    prompt: "regenerate velocity plots from the latest run"
+    expected: skip
+    rationale: >
+      Should trigger veloline-analysis-result (stage 3), not setup (stage 1).
+
+  - id: n06_conceptual_what_is_mp
+    category: N-conceptual
+    prompt: "how does the MetaparContainer work?"
+    expected: skip
+    rationale: >
+      Conceptual question about architecture — expects an explanation,
+      not stage execution.
+
+  - id: n07_conceptual_preprocess_module
+    category: N-conceptual
+    prompt: "what does the preprocess module do?"
+    expected: skip
+    rationale: >
+      Asks about code behaviour, not about running the pipeline.
+
+  - id: n08_edit_adt_rna_map
+    category: N-edit
+    prompt: "add CD3E to the adt_rna_map dictionary"
+    expected: skip
+    rationale: >
+      Code edit request — the user wants to modify data_loading.py, not
+      execute stage 1.
