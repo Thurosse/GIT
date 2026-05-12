@@ -1,6 +1,6 @@
 ---
 name: veloline-run-inference
-description: Run stage 2 (sections 9-10) of the RNA-ADT velocity pipeline (the `veloline` package): execute FIT 1 (pseudotime ϕ via SVI or NUTS) and FIT 2 (kinetics β, γ, A, B), persisting posteriors and ELBO traces to `results/<run>/state/`. Trigger ONLY when the user explicitly asks to run the velocity pipeline's inference stage — phrases like "run veloline inference stage", "run fit1", "run fit2", "execute SVI on the velocity model", "fit the Pyro models", or "rerun the variational inference". Do NOT trigger when the user is editing model definitions in `models.py`, asking conceptual questions about Pyro/SVI/MCMC, or working on plots/diagnostics.
+description: Run stage 2 (sections 9-10) of the RNA-ADT velocity pipeline (the `veloline` package) = execute FIT 1 (pseudotime ϕ via SVI or NUTS) and FIT 2 (kinetics β, γ, A, B), persisting posteriors and ELBO traces to `results/<run>/state/`. Trigger ONLY when the user explicitly asks to run the velocity pipeline's inference stage — phrases like "run veloline inference stage", "run fit1", "run fit2", "execute SVI on the velocity model", "fit the Pyro models", or "rerun the variational inference". Do NOT trigger when the user is editing model definitions in `models.py`, asking conceptual questions about Pyro/SVI/MCMC, or working on plots/diagnostics.
 ---
 
 # Veloline run-inference (stage 2)

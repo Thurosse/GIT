@@ -1,6 +1,6 @@
 ---
 name: veloline-pipeline-setup
-description: Run stage 1 (sections 1-8) of the RNA-ADT velocity pipeline (the `veloline` package): load AnnData, preprocess, build the `mp` MetaparContainer, and persist `adata_fit.h5ad` + `mp.pt` + `rng_state.pt` + `model_workflow.json` to `results/<run>/state/`. Trigger ONLY when the user explicitly asks to run the velocity pipeline's setup stage — phrases like "run veloline pipeline setup", "rebuild mp", "prepare data for fit1/fit2", "execute setup stage of the velocity pipeline", or "regenerate adata_fit". Do NOT trigger on generic notebook edits, on requests to modify `metaparams.py`, on plotting questions, or on unrelated "setup" requests in other contexts.
+description: Run stage 1 (sections 1-8) of the RNA-ADT velocity pipeline (the `veloline` package) = load AnnData, preprocess, build the `mp` MetaparContainer, and persist `adata_fit.h5ad` + `mp.pt` + `rng_state.pt` + `model_workflow.json` to `results/<run>/state/`. Trigger ONLY when the user explicitly asks to run the velocity pipeline's setup stage — phrases like "run veloline pipeline setup", "rebuild mp", "prepare data for fit1/fit2", "execute setup stage of the velocity pipeline", or "regenerate adata_fit". Do NOT trigger on generic notebook edits, on requests to modify `metaparams.py`, on plotting questions, or on unrelated "setup" requests in other contexts.
 ---
 
 # Veloline pipeline setup (stage 1)
