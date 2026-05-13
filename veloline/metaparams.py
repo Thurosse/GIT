@@ -19,34 +19,18 @@ USE_GPU = False
 
 
 # ── data loading ──────────────────────────────────────────────────────────────
-data_all_path = {
-    "1":  "/home/arthur/cache/sample_filtered_feature_bc_matrix_240430_1.h5ad",  # !! barcoding
-    "5":  "/home/arthur/cache/sample_filtered_feature_bc_matrix_250819_5.h5ad",  # inverse dpt
-    "7":  "/home/arthur/cache/sample_filtered_feature_bc_matrix_250819_7.h5ad",
-    "91": "/home/arthur/cache/sample_filtered_feature_bc_matrix_250825_9_Hg1.h5ad",
-    "92": "/home/arthur/cache/sample_filtered_feature_bc_matrix_250825_9_Hg2.h5ad",
-    "94": "/home/arthur/cache/sample_filtered_feature_bc_matrix_250825_9_Hg4.h5ad",
-}
 
-DATA_PATH = data_all_path["7"]
+DATA_PATH = "file_path"
 
 #  ── barcode ──────────────────────────────────────────────────────────────
-BARCODE_NAMES = ["Hu.Hg1", "Hu.Hg2"]
-BARCODE_SELECTED = None    # put None for no barcode #0 for first
+BARCODE_NAMES =[]  # exemple ["barcode_name_1","barcode_name_2","CGTAcA"]
+BARCODE_SELECTED = None    # put None for no barcode , put the index of the barcode you wnat from the list above 
 
 # ── cell-type filtering (clusters to EXCLUDE) ────────────────────────────────
-cell_id = "cluster_BMM"
+cell_id = "cluster" #TO CHANGE 
 
-EXCLUDED_CLUSTERS = [
-    "QC_removed",
-    "Late Erythroid",
-    "CD4 Memory T",
-    "CD8 Memory T",
-    "Naive T",
-    "Early Erythroid",
-    "Cycling Progenitor",
-    "NK",
-]
+EXCLUDED_CLUSTERS = [] # names in cluster to exclude exemple : ["population1","population_2"] in the column
+
 
 
 # ── gene selection ────────────────────────────────────────────────────────────
