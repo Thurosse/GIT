@@ -1,0 +1,11 @@
+test_af_usa_import (test_convert_h5ad_for_veloline.TestConvertH5adForVeloline.test_af_usa_import) ... ok
+test_ensure_adt_from_obsm_dataframe (test_convert_h5ad_for_veloline.TestConvertH5adForVeloline.test_ensure_adt_from_obsm_dataframe) ... ok
+test_ensure_cluster_auto (test_convert_h5ad_for_veloline.TestConvertH5adForVeloline.test_ensure_cluster_auto) ... ok
+test_ensure_layers_auto_detect (test_convert_h5ad_for_veloline.TestConvertH5adForVeloline.test_ensure_layers_auto_detect) ... ok
+test_missing_layers_raises (test_convert_h5ad_for_veloline.TestConvertH5adForVeloline.test_missing_layers_raises) ... ok
+test_use_x_as_spliced (test_convert_h5ad_for_veloline.TestConvertH5adForVeloline.test_use_x_as_spliced) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.054s
+
+OK
